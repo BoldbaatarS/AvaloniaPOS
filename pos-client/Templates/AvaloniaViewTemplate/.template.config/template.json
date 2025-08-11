@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "YourName",
+  "classifications": ["Avalonia", "View", "MVVM"],
+  "name": "Avalonia View + ViewModel",
+  "identity": "AvaloniaViewTemplate.CSharp",
+  "shortName": "avalonia-view",
+  "tags": { "language": "C#", "type": "item" },
+  "sourceName": "TemplateName",
+  "symbols": {
+    "namespace": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "RestaurantPOS",
+      "replaces": "TemplateNamespace"
+    }
+  },
+  "primaryOutputs": [
+    { "path": "Views/TemplateName.axaml" },
+    { "path": "Views/TemplateName.axaml.cs" },
+    { "path": "ViewModels/TemplateNameViewModel.cs" }
+  ],
+  "modifiers": [
+    {
+      "condition": "true",
+      "rename": {
+        "Views/TemplateName.axaml": "Views/$fileinputname$.axaml",
+        "Views/TemplateName.axaml.cs": "Views/$fileinputname$.axaml.cs",
+        "ViewModels/TemplateNameViewModel.cs": "ViewModels/$fileinputname$ViewModel.cs"
+      }
+    }
+  ]
+}

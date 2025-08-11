@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="RestaurantPOS.Controls.Sidebar"
+             xmlns:vm="clr-namespace:RestaurantPOS.ViewModels"
+             x:DataType="vm:AdminPanelViewModel">
+    <Grid>
+        <Border Background="#2C3E50" Width="{Binding SidebarWidth}">
+            <StackPanel>
+                <Button Content="☰" Command="{Binding ToggleSidebarCommand}" />
+                <Button Content="Хэрэглэгчид" />
+                <Button Content="Заалууд" />
+                <Button Content="Ширээнүүд" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

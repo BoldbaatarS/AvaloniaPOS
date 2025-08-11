@@ -1,0 +1,29 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:RestaurantPOS.Converters"
+             x:Class="RestaurantPOS.App"
+             xmlns:local="clr-namespace:RestaurantPOS"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+        <StyleInclude Source="avares://RestaurantPOS/Styles/CustomStyles.xaml"/>
+     
+    </Application.Styles>
+    <Application.Resources>
+        <converters:NullToAddEditConverter x:Key="NullToAddEditConverter"/>
+        <converters:PasswordMaskConverter x:Key="PasswordMaskConverter"/>
+        <converters:EyeIconConverter x:Key="EyeIconConverter"/>
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        <converters:MaskedTextConverter x:Key="MaskedTextConverter"/>
+        <converters:ImageBrushConverter x:Key="ImageBrushConverter"/>
+        <converters:AddOffsetConverter x:Key="AddOffsetConverter"/>
+
+    </Application.Resources>
+
+    <Application.DataTemplates>
+    <local:ViewLocator/>
+  </Application.DataTemplates>
+</Application>

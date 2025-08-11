@@ -1,0 +1,7 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="TemplateNamespace.Views.TemplateNameView">
+    <Grid>
+        <TextBlock Text="This is TemplateNameView" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    </Grid>
+</UserControl>

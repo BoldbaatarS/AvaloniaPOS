@@ -1,0 +1,69 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:RestaurantPOS.ViewModels"
+    xmlns:models="clr-namespace:RestaurantPOS.Models"
+    xmlns:converters="using:Avalonia.Data.Converters"
+    x:Class="RestaurantPOS.Views.HomeView"
+    x:DataType="vm:HomeViewModel">
+
+   
+    
+    <DockPanel>
+
+        <!-- Заал сонгох ComboBox -->
+        <ComboBox DockPanel.Dock="Top"
+                  ItemsSource="{Binding Halls}"
+                  SelectedItem="{Binding SelectedHall, Mode=TwoWay}"
+                  Width="200"
+                  Margin="10"
+                  IsVisible="{Binding IsHallSelectionVisible}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <!-- Hall image + ширээнүүд байрлуулах -->
+        <Border>
+            <Border.Background>
+                <ImageBrush Source="{Binding SelectedHall.SafeHallImagePath}" Stretch="UniformToFill"/>
+            </Border.Background>
+            <Canvas x:Name="HallCanvas"
+                    Width="{Binding HallWidth}"
+                    Height="{Binding HallHeight}"
+                    Background="Transparent">
+
+                <ItemsControl ItemsSource="{Binding Tables}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas Background="Transparent"
+                                    Width="{Binding DataContext.HallWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Height="{Binding DataContext.HallHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                            
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:TableModel">
+                            <Border
+                                Background="Transparent"
+                                PointerPressed="OnTablePointerPressed"
+                                PointerMoved="OnTablePointerMoved"
+                                PointerReleased="OnTablePointerReleased"
+                                Tag="{Binding}"> <!-- TableModel-г хадгална -->
+
+                                <StackPanel>
+                                    <Image Source="{Binding SafeTableImagePath}" Width="80" Height="80"/>
+                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Canvas>
+            
+        </Border>
+    </DockPanel>
+</UserControl>

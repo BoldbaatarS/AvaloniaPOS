@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="RestaurantPOS.Views.AdminPanelView"
+             xmlns:vm="clr-namespace:RestaurantPOS.ViewModels"
+             xmlns:conv="clr-namespace:RestaurantPOS.Converters"
+             x:DataType="vm:AdminPanelViewModel">
+    <UserControl.Resources>
+        <conv:BooleanNegationConverter x:Key="NegateBool"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border x:Name="SidebarPanel"
+                Width="{Binding SidebarWidth}"
+                Background="#2C3E50">
+            <StackPanel>
+                <!-- Toggle -->
+                <Button Height="50" Command="{Binding ToggleSidebarCommand}" Background="Transparent">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="M3,6H21V8H3V6M3,12H21V14H3V12M3,18H21V20H3V18Z" Width="20" Height="20" Foreground="White"/>
+                        <TextBlock Text="Цэс" IsVisible="{Binding IsCollapsed, Converter={StaticResource NegateBool}}" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Users -->
+                <Button Height="50" Command="{Binding OpenUsersCommand}" Background="Transparent" ToolTip.Tip="Хэрэглэгчид">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" Width="20" Height="20" Foreground="White"/>
+                        <TextBlock Text="Хэрэглэгчид" IsVisible="{Binding IsCollapsed, Converter={StaticResource NegateBool}}" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Halls -->
+                <Button Height="50" Command="{Binding OpenHallsCommand}" Background="Transparent" ToolTip.Tip="Заалууд">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="M4,4H20V20H4V4Z" Width="20" Height="20" Foreground="White"/>
+                        <TextBlock Text="Заалууд" IsVisible="{Binding IsCollapsed, Converter={StaticResource NegateBool}}" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Tables -->
+                <Button Height="50" Command="{Binding OpenTablesCommand}" Background="Transparent" ToolTip.Tip="Ширээнүүд">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="M2,2H10V10H2V2M14,2H22V10H14V2M2,14H10V22H2V14M14,14H22V22H14V14Z" Width="20" Height="20" Foreground="White"/>
+                        <TextBlock Text="Ширээнүүд" IsVisible="{Binding IsCollapsed, Converter={StaticResource NegateBool}}" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <!-- Анимац Sidebar өргөнд -->
+            <Border.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Width" Duration="0:0:0.25" Easing="CircularEaseOut"/>
+                </Transitions>
+            </Border.Transitions>
+        </Border>
+
+        <!-- Content -->
+        <ContentControl Grid.Column="1" Content="{Binding CurrentAdminView}" />
+    </Grid>
+</UserControl>

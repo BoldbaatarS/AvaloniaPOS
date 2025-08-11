@@ -1,0 +1,63 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="RestaurantPOS.Views.AdminTablesView"
+             xmlns:vm="clr-namespace:RestaurantPOS.ViewModels"
+             x:DataType="vm:AdminTablesViewModel">
+    <DockPanel Margin="10">
+        <!-- Форм -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10">
+            <StackPanel Width="250" Spacing="5">
+                <TextBlock Text="Ширээний нэр:"/>
+                <TextBox Text="{Binding TableName, Mode=TwoWay}" />
+
+                <TextBlock Text="Хамаарах заал:"/>
+                <ComboBox ItemsSource="{Binding Halls}" 
+                        SelectedItem="{Binding SelectedHall}"
+                        Width="200">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBlock Text="Байршил (X, Y):"/>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <TextBox Width="80" Text="{Binding PositionX, Mode=TwoWay}"/>
+                    <TextBox Width="80" Text="{Binding PositionY, Mode=TwoWay}"/>
+                </StackPanel>
+
+                <TextBlock Text="Зураг:"/>
+                <Border BorderThickness="1" BorderBrush="Gray" Width="200" Height="120" Margin="0,5,0,0">
+                    <Image Source="{Binding SafePreviewImage}" Stretch="Uniform"/>
+                </Border>
+                
+                <Button Content="Зураг сонгох" Command="{Binding BrowseImageCommand}" />
+            </StackPanel>
+
+            <StackPanel VerticalAlignment="Bottom" Spacing="5">
+                <Button Content="{Binding SelectedTable, Converter={StaticResource NullToAddEditConverter}}" 
+                        Command="{Binding AddOrUpdateTableCommand}" Width="120"/>
+                <Button Content="Устгах" Command="{Binding DeleteTableCommand}" 
+                        IsEnabled="{Binding SelectedTable}" Width="120" Background="Tomato"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Жагсаалт -->
+        <DataGrid ItemsSource="{Binding Tables}" SelectedItem="{Binding SelectedTable}" AutoGenerateColumns="False" Margin="0,10,0,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Нэр" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="X" Binding="{Binding PositionX}" Width="*"/>
+                <DataGridTextColumn Header="Y" Binding="{Binding PositionY}" Width="*"/>
+                <DataGridTextColumn Header="Заал" Binding="{Binding Hall.Name}" Width="*"/>
+                <DataGridTemplateColumn Header="Зураг" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding SafeTableImagePath}" Width="100" Height="80" Stretch="UniformToFill"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

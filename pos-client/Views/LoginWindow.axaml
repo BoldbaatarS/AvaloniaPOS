@@ -1,0 +1,101 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="RestaurantPOS.Views.LoginWindow"
+        xmlns:vm="clr-namespace:RestaurantPOS.ViewModels"
+        x:DataType="vm:LoginWindowViewModel"
+        Width="780" Height="400" CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#E8F4FF"
+        CornerRadius="16"
+        PointerPressed="Window_PointerPressed"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="0">
+
+  <Grid >
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/>     <!-- Зураг -->
+      <ColumnDefinition Width="2*"/>       <!-- Текст, Тоо -->
+      <ColumnDefinition Width="3*"/>       <!-- Үсэг -->
+    </Grid.ColumnDefinitions>
+    
+    <!-- Зураг хэсэг -->
+    <Border Grid.Column="0"
+        Margin="5"
+        Width="240"
+        Height="375"
+        CornerRadius="10">
+        <Border.Background>
+            <ImageBrush Source="/Assets/restaurant.jpg" Stretch="UniformToFill"/>
+        </Border.Background>
+    </Border>
+
+    <!-- Нэвтрэх хэсэг -->
+    <StackPanel Grid.Column="1" Margin="10" VerticalAlignment="Center" Spacing="80">
+      <TextBox Name="PinDisplay"
+               Text="{Binding Pin, Mode=TwoWay}"
+               Width="190"
+               Height="40"
+               FontSize="20"
+               HorizontalContentAlignment="Center"
+               HorizontalAlignment="Left"
+               Background="#ffffff"
+               BorderBrush="#ccc"
+               CornerRadius="8" PasswordChar="*"/>
+      
+      <!-- Тоо товчлуурууд -->
+      <UniformGrid Columns="3" Rows="4" ColumnSpacing="3" RowSpacing="5" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <Button Content="1" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="2" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="3" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="4" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="5" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="6" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="7" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="8" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="9" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="0" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="←" Click="Backspace_Click" Classes="pin-button"/>
+        <Button Content="C" Click="Clear_Click" Classes="pin-button"/>
+      </UniformGrid>
+    </StackPanel>
+
+    <!-- Үсэгтэй товчлуурууд -->
+    <StackPanel Grid.Column="2" Margin="0,0,10,13" VerticalAlignment="Bottom" HorizontalAlignment="Left" Spacing="0">
+      <UniformGrid Columns="5" Rows="6" ColumnSpacing="3" RowSpacing="3">
+        <Button Content="A" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="B" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="C" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="D" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="E" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="F" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="G" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="H" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="I" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="J" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="K" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="L" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="M" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="N" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="O" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="P" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="Q" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="R" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="S" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="T" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="U" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="V" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="W" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="X" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="Y" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="Z" Click="PinButton_Click" Classes="pin-button"/>
+        <Button Content="Нэвтрэх" Command="{Binding LoginCommand}" CommandParameter="{Binding $parent[Window]}" Width="246" Height="60" Classes="primary-button1" Grid.ColumnSpan="4" />
+      </UniformGrid>
+
+      
+        
+     
+    </StackPanel>
+
+  </Grid>
+</Window>

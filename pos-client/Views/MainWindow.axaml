@@ -1,0 +1,33 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:RestaurantPOS.ViewModels"
+        x:Class="RestaurantPOS.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Background="#E8F4FF"
+        Width="1024" Height="768" Title="Navigation Demo">
+
+
+    <Grid RowDefinitions="*,Auto">
+        <!-- Content area -->
+        <ContentControl Grid.Row="0" Content="{Binding CurrentView}"/>
+
+        <!-- Bottom Navigation -->
+        <Border Grid.Row="1" Background="#2e2e3e" Height="60">
+            <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="10,0">
+                <Button Content="Home" Command="{Binding HomeCommand}" Classes="bottom-nav-btn" Focusable="False"/>
+                <Button Content="Admin" Command="{Binding AdminCommand}" CommandParameter="{Binding $parent[Window]}" IsVisible="{Binding IsAdmin}"  Classes="bottom-nav-btn" Focusable="False"/>
+                <Button Content="Reports" Command="{Binding ReportsCommand}" Classes="bottom-nav-btn" Focusable="False"/>
+                <Button Content="Settings" Command="{Binding SettingsCommand}" Classes="bottom-nav-btn" Focusable="False"/>
+               
+                <Button Content="Гарах" Command="{Binding LogoutCommand}" CommandParameter="{Binding $parent[Window]}" Classes="grow-button" Focusable="False"/>
+                <!-- <Button Content="Settings" Command="{Binding SettingsCommand}" Classes="bottom-nav-btn"/> -->
+            </StackPanel>
+           </ScrollViewer>
+        </Border>
+    </Grid>
+
+
+        
+    
+</Window>
