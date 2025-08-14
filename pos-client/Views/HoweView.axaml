@@ -2,13 +2,11 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="clr-namespace:RestaurantPOS.ViewModels"
-    xmlns:models="clr-namespace:RestaurantPOS.Models"
+    xmlns:models="clr-namespace:Shared.Models;assembly=shared"
     xmlns:converters="using:Avalonia.Data.Converters"
     x:Class="RestaurantPOS.Views.HomeView"
     x:DataType="vm:HomeViewModel">
 
-   
-    
     <DockPanel>
 
         <!-- Заал сонгох ComboBox -->
@@ -28,7 +26,7 @@
         <!-- Hall image + ширээнүүд байрлуулах -->
         <Border>
             <Border.Background>
-                <ImageBrush Source="{Binding SelectedHall.SafeHallImagePath}" Stretch="UniformToFill"/>
+                <ImageBrush Source="{Binding SelectedHall.SafeImagePath, Converter={StaticResource PathToBitmap}}" Stretch="UniformToFill"/>
             </Border.Background>
             <Canvas x:Name="HallCanvas"
                     Width="{Binding HallWidth}"
@@ -55,7 +53,7 @@
                                 Tag="{Binding}"> <!-- TableModel-г хадгална -->
 
                                 <StackPanel>
-                                    <Image Source="{Binding SafeTableImagePath}" Width="80" Height="80"/>
+                                    <Image Source="{Binding SafeImagePath, Converter={StaticResource PathToBitmap}}" Width="80" Height="80"/>
                                     <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Border>

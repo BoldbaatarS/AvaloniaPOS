@@ -1,6 +1,6 @@
 using System;
 
-namespace RestaurantPOS.Models;
+namespace Shared.Models;
 
 public class UserModel
 {

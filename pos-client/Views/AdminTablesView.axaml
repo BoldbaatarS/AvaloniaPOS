@@ -53,7 +53,7 @@
                 <DataGridTemplateColumn Header="Зураг" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding SafeTableImagePath}" Width="100" Height="80" Stretch="UniformToFill"/>
+                            <Image Source="{Binding SafeImagePath, Converter={StaticResource PathToBitmap}}" Width="100" Height="80" Stretch="UniformToFill"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

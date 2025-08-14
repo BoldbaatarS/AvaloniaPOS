@@ -8,16 +8,16 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RestaurantPOS.Models;
-using RestaurantPOS.Data;
-using RestaurantPOS.Utils;
+using Infrastructure.Sqlite;
+using Shared.Abstractions; 
 using Avalonia.Media.Imaging;
+using Shared.Models;
 
 namespace RestaurantPOS.ViewModels;
 
 public partial class AdminTablesViewModel : ViewModelBase
 {
-    private readonly AppDbContext _context = new();
+    private readonly AppDbContext _context;
 
     [ObservableProperty] private ObservableCollection<TableModel> tables = new();
     [ObservableProperty] private TableModel? selectedTable;
@@ -32,12 +32,15 @@ public partial class AdminTablesViewModel : ViewModelBase
     [ObservableProperty] private string? tableImagePath; // Ширээний зураг
 
     [ObservableProperty] private string? editTableImagePath;   // Түр сонгосон зураг (preview)
-
-    public AdminTablesViewModel()
+    private readonly IImageStorage _imageStorage;
+    public AdminTablesViewModel(IImageStorage imageStorage, AppDbContext context)
     {
+        _imageStorage = imageStorage;
+         _context = context;
         LoadTables();
         LoadHalls();
     }
+    
 
     private void LoadTables()
     {
@@ -56,7 +59,7 @@ public partial class AdminTablesViewModel : ViewModelBase
         var mainWindow = lifetime?.MainWindow;
         if (mainWindow == null) return;
 
-        var file = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        var files = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Ширээний зураг сонгох",
             AllowMultiple = false,
@@ -66,14 +69,22 @@ public partial class AdminTablesViewModel : ViewModelBase
             }
         });
 
-        if (file != null && file.Any())
-        {
-            var savedPath = await ImageStorage.SaveImageAsync(file.First(), "Tables");
-            if (savedPath != null)
-            {
-                EditTableImagePath = savedPath;
-            }
-        }
+         var file = files?.FirstOrDefault();
+        if (file is null) return;
+
+        await using var stream = await file.OpenReadAsync(); // Avalonia -> Stream
+        // subfolder: "Halls", файл нэрийг эх нэрээр нь өгөх (сонголттой)
+        var savedPath = await _imageStorage.SaveFromStreamAsync(stream, subfolder: "Tables", fileName: file.Name);
+        EditTableImagePath = savedPath; // preview-д шууд хэрэглэнэ
+
+        // if (file != null && file.Any())
+        // {
+        //     var savedPath = await ImageStorage.SaveImageAsync(file.First(), "Tables");
+        //     if (savedPath != null)
+        //     {
+        //         EditTableImagePath = savedPath;
+        //     }
+        // }
     }
 
     [RelayCommand]

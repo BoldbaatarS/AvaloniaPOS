@@ -1,10 +1,20 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Shared.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace RestaurantPOS.ViewModels;
 
 public partial class AdminPanelViewModel : ViewModelBase
 {
+
+    private readonly IImageStorage _imageStorage;
+
+    public AdminPanelViewModel(IImageStorage imageStorage)
+    {
+        _imageStorage = imageStorage;
+    }
     [ObservableProperty] private double sidebarWidth = 200;
     [ObservableProperty] private bool isCollapsed;
     [ObservableProperty] private object? currentAdminView;
@@ -18,13 +28,13 @@ public partial class AdminPanelViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void OpenUsers() => CurrentAdminView = new AdminUsersViewModel();
+    private void OpenUsers() => CurrentAdminView = App.Services.GetRequiredService<AdminUsersViewModel>();
 
     [RelayCommand]
-    private void OpenHalls() => CurrentAdminView = new AdminHallsViewModel();
+    private void OpenHalls() => CurrentAdminView = App.Services.GetRequiredService<AdminHallsViewModel>();
 
     [RelayCommand]
-    private void OpenTables() => CurrentAdminView = new AdminTablesViewModel();
+    private void OpenTables() => CurrentAdminView = App.Services.GetRequiredService<AdminTablesViewModel>();
 
     // [RelayCommand]
     // private void OpenReports() => CurrentAdminView = new ReportsAdminViewModel();

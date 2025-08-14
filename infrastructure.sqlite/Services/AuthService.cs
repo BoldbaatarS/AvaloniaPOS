@@ -1,6 +1,6 @@
 using System.Linq;
-using RestaurantPOS.Data;
-using RestaurantPOS.Models;
+using Infrastructure.Sqlite;
+using Shared.Models;
 
 public interface IAuthService
 {

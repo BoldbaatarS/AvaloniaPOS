@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using RestaurantPOS.Services;
 using RestaurantPOS.Views;
 using RestaurantPOS.Views.Dialogs;
+using Shared.Abstractions;
 
 
 namespace RestaurantPOS.ViewModels;
@@ -23,10 +24,11 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool isAdmin;
-
+      
     public MainWindowViewModel(INavigationService navigation)
     {
         _navigation = navigation;
+        
 
         // NavigationService доторх өөрчлөлтийг сонсох
         _navigation.PropertyChanged += (s, e) =>
@@ -36,11 +38,11 @@ public partial class MainWindowViewModel : ViewModelBase
         };
 
         // Эхлэхэд HomeView харуулах
-        _navigation.NavigateTo(new HomeViewModel());
+       _navigation.NavigateTo<HomeViewModel>();
     }
 
     [RelayCommand]
-    public void Home() => _navigation.NavigateTo(new HomeViewModel());
+    public void Home() => _navigation.NavigateTo<HomeViewModel>();
 
     [RelayCommand]
     public async Task Admin(Window owner)
@@ -48,23 +50,13 @@ public partial class MainWindowViewModel : ViewModelBase
         if (App.AuthService.CurrentUser?.IsAdmin == true)
         {
             // Админ бол нэвтрэх
-            _navigation.NavigateTo(new AdminPanelViewModel());
+            _navigation.NavigateTo<AdminPanelViewModel>();
         }
         else
         {
             await MessageBoxService.ShowAsync(owner, "Хандалт хориглогдсон", "Таны эрх хүрэхгүй байна.", MessageDialog.DialogType.Warning);
         }
-        // Хэрэглэгч байхгүй эсвэл админ биш бол алдаа харуул
-        // if (string.IsNullOrEmpty(CurrentUser) || !IsAdmin)
-        // {
-        //     Console.WriteLine($"Admin access denied. Current user: {CurrentUser ?? "null"}, IsAdmin: {IsAdmin}");
-
-
-        //     await MessageBoxService.ShowAsync(owner, "Алдаа", "Зөвхөн админ нэвтэрсэн хэрэглэгчид админ хэсэгт нэвтрэх боломжтой.", MessageDialog.DialogType.Error);
-        //     return;
-        // }
-
-        
+      
     }
     [RelayCommand] public void Reports() => _navigation.NavigateTo(null!);//new ReportsViewModel()
     [RelayCommand] public void Settings() => _navigation.NavigateTo(null!);// new SettingsViewModel()

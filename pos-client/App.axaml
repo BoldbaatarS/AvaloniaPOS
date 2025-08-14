@@ -20,6 +20,7 @@
         <converters:MaskedTextConverter x:Key="MaskedTextConverter"/>
         <converters:ImageBrushConverter x:Key="ImageBrushConverter"/>
         <converters:AddOffsetConverter x:Key="AddOffsetConverter"/>
+        <converters:PathToBitmapConverter x:Key="PathToBitmap"/>
 
     </Application.Resources>
 

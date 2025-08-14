@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RestaurantPOS.Models;
+using Shared.Models;
 
-
-namespace RestaurantPOS.Data;
+namespace Infrastructure.Sqlite;
 
     public interface IUserRepository<T>
     {

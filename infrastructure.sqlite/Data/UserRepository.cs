@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using RestaurantPOS.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Infrastructure.Sqlite;
+using Shared.Models;
 
-namespace RestaurantPOS.Data
+
+namespace Infrastructure.Sqlite
 {
     public class UserRepository : IUserRepository<UserModel>
     {
@@ -16,8 +18,8 @@ namespace RestaurantPOS.Data
             _context = context;
             _context.Database.EnsureCreated();
         }
-//dfgdfgdfgd
-        public async Task<List<UserModel>> GetAllAsync()=>
+        //dfgdfgdfgd
+        public async Task<List<UserModel>> GetAllAsync() =>
             await _context.Users.ToListAsync();
 
         public async Task<UserModel> GetByIdAsync(Guid id) =>
@@ -50,6 +52,6 @@ namespace RestaurantPOS.Data
             return await _context.Users.FirstOrDefaultAsync(u => u.Pin == pin);
         }
 
-       
+
     }
 }

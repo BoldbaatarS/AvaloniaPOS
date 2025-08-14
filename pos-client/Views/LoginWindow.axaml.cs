@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using RestaurantPOS.Data;
 using RestaurantPOS.Services;
 
 namespace RestaurantPOS.Views;

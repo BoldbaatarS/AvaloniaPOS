@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-
+using Infrastructure.Sqlite; // Adjusted namespace to match the context
 #nullable disable
 
-namespace RestaurantPOS.Migrations
+namespace Infrastructure.Sqlite.Migrations
+
 {
     /// <inheritdoc />
     public partial class AddTables : Migration

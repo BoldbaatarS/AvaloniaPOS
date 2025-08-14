@@ -4,16 +4,16 @@ using System.IO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using CommunityToolkit.Mvvm.ComponentModel;
-using RestaurantPOS.Data;
-using RestaurantPOS.Models;
+using Infrastructure.Sqlite;
 using RestaurantPOS.Utils;
-
+using Shared.Models;
+using Avalonia.Media.Imaging;
 
 namespace RestaurantPOS.ViewModels;
 
 public partial class HomeViewModel : ViewModelBase
 {
-    private readonly AppDbContext _context = new();
+    private readonly AppDbContext _context;
 
     [ObservableProperty] private ObservableCollection<HallModel> halls = new();
     [ObservableProperty] private HallModel? selectedHall;
@@ -23,8 +23,9 @@ public partial class HomeViewModel : ViewModelBase
 
 
 
-    public HomeViewModel()
+    public HomeViewModel(AppDbContext context)
     {
+        _context = context;
         LoadHalls();
     }
 
@@ -69,6 +70,30 @@ public partial class HomeViewModel : ViewModelBase
             ? SelectedHall.ImagePath
             : Path.Combine(AppContext.BaseDirectory, "Assets", "Default", "Hall.png");
             
-    public double HallWidth => SelectedHall?.SafeHallImagePath?.PixelSize.Width ?? 800;
-    public double HallHeight => SelectedHall?.SafeHallImagePath?.PixelSize.Height ?? 600;
+     public double HallWidth
+    {
+        get
+        {
+            var path = SelectedHall?.SafeImagePath;
+            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+            {
+                using var bmp = new Bitmap(path);
+                return bmp.PixelSize.Width;
+            }
+            return 800;
+        }
+    }
+    public double HallHeight
+{
+    get
+    {
+        var path = SelectedHall?.SafeImagePath;
+        if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+        {
+            using var bmp = new Bitmap(path);
+            return bmp.PixelSize.Height;
+        }
+        return 600;
+    }
+}
 }

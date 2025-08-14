@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RestaurantPOS.Data;
+using Infrastructure.Sqlite;
 
 #nullable disable
 
-namespace RestaurantPOS.Migrations
+namespace Infrastructure.Sqlite.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20250804042324_Init")]

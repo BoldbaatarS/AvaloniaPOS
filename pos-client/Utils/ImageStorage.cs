@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 
 namespace RestaurantPOS.Utils;
+[Obsolete("Энэ методыг ашиглах боломжгүй. NewMethod ашиглана уу.", true)]
 public static class ImageStorage
 {
     private static readonly string RootFolder = Path.Combine(AppContext.BaseDirectory, "Images");

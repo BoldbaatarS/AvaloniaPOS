@@ -6,9 +6,12 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Media;
-using RestaurantPOS.Models;
+using Avalonia.Media.Imaging;
+using Microsoft.EntityFrameworkCore;           // <-- FirstOrDefaultAsync / SaveChangesAsync
+using Microsoft.Extensions.DependencyInjection;
+using Infrastructure.Sqlite;
+using Shared.Models;
 using RestaurantPOS.ViewModels;
 
 namespace RestaurantPOS.Views;
@@ -29,7 +32,6 @@ public partial class HomeView : UserControl
         {
             if (ViewModel != null)
             {
-                // ViewModel-д өөрчлөлт орсон үед DrawTables()
                 ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
                 if (ViewModel.Tables != null)
@@ -73,13 +75,16 @@ public partial class HomeView : UserControl
 
             var panel = new StackPanel { HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center };
 
-
-            panel.Children.Add(new Image
+            var path = table.SafeImagePath; // string path
+            var image = new Image
             {
-                Source = table.SafeTableImagePath,
+                Source = File.Exists(path)
+                    ? new Bitmap(path)
+                    : new Bitmap(Path.Combine(AppContext.BaseDirectory, "Assets", "Default", "Table.png")),
                 Width = 80,
                 Height = 80
-            });
+            };
+            panel.Children.Add(image);
 
             panel.Children.Add(new TextBlock
             {
@@ -106,41 +111,58 @@ public partial class HomeView : UserControl
             _isDragging = true;
 
             e.Pointer.Capture(element);
+
+            // Bring to front (optional)
+            element.SetValue(Panel.ZIndexProperty, 999);
         }
     }
 
     private void OnTablePointerMoved(object? sender, PointerEventArgs e)
     {
-        if (_isDragging && _draggingTable != null && sender is Border border)
-        {
-            var current = e.GetPosition(HallCanvas);
-            var dx = current.X - _lastPoint.X;
-            var dy = current.Y - _lastPoint.Y;
+        if (!_isDragging || _draggingTable is null || sender is not Border border)
+            return;
 
-            _draggingTable.PositionX += dx;
-            _draggingTable.PositionY += dy;
+        var current = e.GetPosition(HallCanvas);
+        var dx = current.X - _lastPoint.X;
+        var dy = current.Y - _lastPoint.Y;
 
-            Canvas.SetLeft(border, _draggingTable.PositionX);
-            Canvas.SetTop(border, _draggingTable.PositionY);
+        // Proposed new position
+        var newX = _draggingTable.PositionX + dx;
+        var newY = _draggingTable.PositionY + dy;
 
-            _lastPoint = current;
-        }
+        // Canvas & item sizes
+        var canvasW = GetActualWidth(HallCanvas);
+        var canvasH = GetActualHeight(HallCanvas);
+        var itemW = GetActualWidth(border);
+        var itemH = GetActualHeight(border);
+
+        // Clamp inside bounds: [0 .. canvas - item]
+        newX = Clamp(newX, 0, Math.Max(0, canvasW - itemW));
+        newY = Clamp(newY, 0, Math.Max(0, canvasH - itemH));
+
+        // Apply to model + UI
+        _draggingTable.PositionX = newX;
+        _draggingTable.PositionY = newY;
+
+        Canvas.SetLeft(border, newX);
+        Canvas.SetTop(border, newY);
+
+        _lastPoint = current;
     }
 
-    private void OnTablePointerReleased(object? sender, PointerReleasedEventArgs e)
+    private async void OnTablePointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         if (_draggingTable != null)
         {
-            // Байрлалыг DB-д хадгалах
-            using (var db = new Data.AppDbContext())
+            using var scope = App.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var dbTable = await db.Tables.FirstOrDefaultAsync(t => t.Id == _draggingTable.Id);
+            if (dbTable != null)
             {
-                var dbTable = db.Tables.FirstOrDefault(t => t.Id == _draggingTable.Id);
-                if (dbTable != null)
-                {
-                    dbTable.PositionX = _draggingTable.PositionX;
-                    dbTable.PositionY = _draggingTable.PositionY;
-                    db.SaveChanges();
-                }
+                dbTable.PositionX = _draggingTable.PositionX;
+                dbTable.PositionY = _draggingTable.PositionY;
+                await db.SaveChangesAsync();
             }
         }
 
@@ -148,4 +170,17 @@ public partial class HomeView : UserControl
         _isDragging = false;
         _draggingTable = null;
     }
+
+    // ---- helpers -------------------------------------------------------------
+
+    private static double Clamp(double val, double min, double max)
+        => val < min ? min : (val > max ? max : val);
+
+    private static double GetActualWidth(Control c)
+        => double.IsFinite(c.Bounds.Width) && c.Bounds.Width > 0 ? c.Bounds.Width :
+           double.IsFinite(c.Width) && c.Width > 0 ? c.Width : 0;
+
+    private static double GetActualHeight(Control c)
+        => double.IsFinite(c.Bounds.Height) && c.Bounds.Height > 0 ? c.Bounds.Height :
+           double.IsFinite(c.Height) && c.Height > 0 ? c.Height : 0;
 }

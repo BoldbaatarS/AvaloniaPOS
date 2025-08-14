@@ -9,20 +9,32 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RestaurantPOS.Models;
-using RestaurantPOS.Utils;
+using Shared.Models;
+using Shared.Abstractions;
+using Infrastructure.Sqlite;
+
+
 
 namespace RestaurantPOS.ViewModels;
+
 public partial class AdminHallsViewModel : ViewModelBase
 {
-    private readonly Data.AppDbContext _context = new();
+    private readonly AppDbContext _context;
 
     [ObservableProperty] private ObservableCollection<HallModel> halls = new();
     [ObservableProperty] private HallModel? selectedHall;
     [ObservableProperty] private string hallName = string.Empty;
     [ObservableProperty] private string? hallImagePath;       // DB-д хадгалагдсан зам
     [ObservableProperty] private string? editHallImagePath;   // Түр сонгосон зураг (preview)
-    public AdminHallsViewModel() => LoadHalls();
+
+    private readonly IImageStorage _imageStorage;
+
+    public AdminHallsViewModel(IImageStorage imageStorage, AppDbContext context)
+    {
+        _imageStorage = imageStorage;
+        _context = context;
+        LoadHalls();
+    }
 
     private void LoadHalls()
     {
@@ -38,21 +50,20 @@ public partial class AdminHallsViewModel : ViewModelBase
         var mainWindow = lifetime?.MainWindow;
         if (mainWindow == null) return;
 
-        var file = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        var files = await mainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Зураг сонгох",
             AllowMultiple = false,
             FileTypeFilter = new[] { new FilePickerFileType("Зураг") { Patterns = new[] { "*.png", "*.jpg", "*.jpeg" } } }
         });
 
-        if (file != null && file.Any())
-        {
-            var savedPath = await ImageStorage.SaveImageAsync(file.First(), "Halls");
-            if (savedPath != null)
-            {
-                EditHallImagePath = savedPath; // Preview-д түр хадгална
-            }
-        }
+        var file = files?.FirstOrDefault();
+        if (file is null) return;
+
+        await using var stream = await file.OpenReadAsync(); // Avalonia -> Stream
+        // subfolder: "Halls", файл нэрийг эх нэрээр нь өгөх (сонголттой)
+        var savedPath = await _imageStorage.SaveFromStreamAsync(stream, subfolder: "Halls", fileName: file.Name);
+        EditHallImagePath = savedPath; // preview-д шууд хэрэглэнэ
     }
 
     [RelayCommand]
