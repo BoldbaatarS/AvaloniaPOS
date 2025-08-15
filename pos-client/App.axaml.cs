@@ -61,6 +61,7 @@ public partial class App : Application
         using (var scope = Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+           // db.Database.EnsureDeleted();
             db.Database.Migrate();
 
             // --seed аргумент байвал зөвхөн seed хийгээд гарах

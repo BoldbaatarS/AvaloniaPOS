@@ -1,0 +1,42 @@
+syntax = "proto3";
+option csharp_namespace = "Shared.Protos";
+
+package sync;
+
+// ---- Basic DTOs ----
+message Hall {
+  string id        = 1;
+  string name      = 2;
+  string imagePath = 3;
+  bool   isDeleted = 4;
+  int64  updatedAt = 5; // unix ms (UTC)
+}
+
+message Table {
+  string id        = 1;
+  string name      = 2;
+  string hallId    = 3;
+  double positionX = 4;
+  double positionY = 5;
+  string imagePath = 6;
+  bool   isDeleted = 7;
+  int64  updatedAt = 8; // unix ms (UTC)
+}
+
+message Envelope {
+  int64 serverTimestamp = 1;
+  repeated Hall halls   = 2;
+  repeated Table tables = 3;
+}
+
+message Since { int64 sinceMs = 1; } // unix ms
+message Ack   { int64 serverTimestamp = 1; }
+
+// ---- Service ----
+service SyncService {
+  // Pull: server -> client (stream)
+  rpc GetChanges(Since) returns (stream Envelope);
+
+  // Push: client -> server (stream), server -> single ack
+  rpc PushChanges(stream Envelope) returns (Ack);
+}

@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.31.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.72.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
   </ItemGroup>
 
@@ -15,5 +22,6 @@
     <ProjectReference Include="..\shared\shared.csproj" />
     <ProjectReference Include="..\shared-protos\shared-protos.csproj" />
     <ProjectReference Include="..\infrastructure.files\Infrastructure.Files.csproj" />
+    <ProjectReference Include="..\infrastructure.sqlite\Infrastructure.Sqlite.csproj" />
   </ItemGroup>
 </Project>
