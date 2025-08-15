@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shared", "shared\shared.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "local-sync-service", "local-sync-service\local-sync-service.csproj", "{8B05D36C-2DAF-4F59-9BEB-32C6CE14C056}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cloud-api", "cloud-api\cloud-api.csproj", "{D6691A43-8453-42E2-B6BD-C16AD0B55BAA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudApi", "CloudApi\CloudApi.csproj", "{D6691A43-8453-42E2-B6BD-C16AD0B55BAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shared-protos", "shared-protos\shared-protos.csproj", "{503100EA-BDA0-4D69-9354-79B97C0DA5C7}"
 EndProject

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shared.Protos;
+using CloudApi;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

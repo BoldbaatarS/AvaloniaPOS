@@ -3,6 +3,8 @@ using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Shared.Protos;
 
+namespace CloudApi;
+
 public sealed class SyncGrpcService : SyncService.SyncServiceBase
 {
     private readonly CloudDbContext _db;
