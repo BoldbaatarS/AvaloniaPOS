@@ -80,33 +80,30 @@ static class SyncEf
         return new DateTimeOffset(max, TimeSpan.Zero).ToUnixTimeMilliseconds();
     }
 
-    public static IQueryable<Hall> SelectSyncHall(this IQueryable<HallModel> q)
-        => q.IgnoreQueryFilters().Select(e => new Hall
-        {
-            Id = e.Id.ToString(),
-            Name = e.Name,
-            ImagePath = e.ImagePath,
-            IsDeleted = EF.Property<bool>(e, "IsDeleted"),
-            UpdatedAt = new DateTimeOffset(
-                EF.Property<DateTime>(e, "UpdatedAt"), TimeSpan.Zero
-            ).ToUnixTimeMilliseconds()
-        });
-
-    public static IQueryable<Table> SelectSyncTable(this IQueryable<TableModel> q)
-        => q.IgnoreQueryFilters().Select(e => new Table
-        {
-            Id = e.Id.ToString(),
-            Name = e.Name,
-            HallId = e.HallId.ToString(),
-            PositionX = e.PositionX,
-            PositionY = e.PositionY,
-            ImagePath = e.ImagePath,
-            IsDeleted = EF.Property<bool>(e, "IsDeleted"),
-            UpdatedAt = new DateTimeOffset(
-                EF.Property<DateTime>(e, "UpdatedAt"), TimeSpan.Zero
-            ).ToUnixTimeMilliseconds()
-        });
-
+    public static IQueryable<Shared.Protos.Hall> SelectSyncHall(this IQueryable<Shared.Models.HallModel> q)
+    => q.IgnoreQueryFilters().Select(e => new Shared.Protos.Hall {
+        Id        = e.Id.ToString(),
+        Name      = e.Name,
+        ImagePath = e.ImagePath ?? "",
+        IsDeleted = EF.Property<bool>(e, "IsDeleted"), // зөв
+        UpdatedAt = new DateTimeOffset(
+                        EF.Property<DateTime>(e, "UpdatedAt"), 
+                        TimeSpan.Zero).ToUnixTimeMilliseconds()
+    });
+   public static IQueryable<Shared.Protos.Table> SelectSyncTable(this IQueryable<Shared.Models.TableModel> q)
+    => q.IgnoreQueryFilters().Select(e => new Shared.Protos.Table {
+        Id        = e.Id.ToString(),
+        Name      = e.Name,
+        HallId    = e.HallId.ToString(),
+        PositionX = e.PositionX,
+        PositionY = e.PositionY,
+        ImagePath = e.ImagePath ?? "",
+        IsDeleted = EF.Property<bool>(e, "IsDeleted"), // зөв
+        UpdatedAt = new DateTimeOffset(
+                        EF.Property<DateTime>(e, "UpdatedAt"),
+                        TimeSpan.Zero).ToUnixTimeMilliseconds()
+    });
+    
     public static async Task UpsertHallAsync(this CloudDbContext db, Hall h)
     {
         var id = Guid.Parse(h.Id);
@@ -120,7 +117,7 @@ static class SyncEf
 
         if (entity == null)
         {
-            entity = new HallModel { Id = id, Name = h.Name ?? "", ImagePath = h.ImagePath };
+            entity = new HallModel { Id = id, Name = h.Name ?? "", ImagePath = h.ImagePath ?? "" };
             db.Halls.Add(entity);
         }
         else
@@ -154,7 +151,7 @@ static class SyncEf
                 HallId = Guid.Parse(t.HallId),
                 PositionX = t.PositionX,
                 PositionY = t.PositionY,
-                ImagePath = t.ImagePath
+                ImagePath = t.ImagePath ?? "" 
             };
             db.Tables.Add(entity);
         }
@@ -164,7 +161,7 @@ static class SyncEf
             entity.HallId = Guid.Parse(t.HallId);
             entity.PositionX = t.PositionX;
             entity.PositionY = t.PositionY;
-            entity.ImagePath = t.ImagePath ?? entity.ImagePath;
+            entity.ImagePath = t.ImagePath ?? entity.ImagePath ?? "";
             db.Entry(entity).Property("IsDeleted").CurrentValue = false;
         }
 

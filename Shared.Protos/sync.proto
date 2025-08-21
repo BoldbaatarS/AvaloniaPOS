@@ -7,7 +7,7 @@ package sync;
 message Hall {
   string id        = 1;
   string name      = 2;
-  string imagePath = 3;
+  optional string imagePath = 3;
   bool   isDeleted = 4;
   int64  updatedAt = 5; // unix ms (UTC)
 }

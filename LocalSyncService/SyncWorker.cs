@@ -59,7 +59,7 @@ public class SyncWorker : BackgroundService
         var halls = await db.Halls.IgnoreQueryFilters()
             .Where(e => EF.Property<DateTime>(e,"UpdatedAt") > sinceUtc)
             .Select(e => new Hall {
-                Id=e.Id.ToString(), Name=e.Name, ImagePath=e.ImagePath,
+                Id=e.Id.ToString(), Name=e.Name, ImagePath=e.ImagePath ?? "",
                 IsDeleted = EF.Property<bool>(e,"IsDeleted"),
                 UpdatedAt = new DateTimeOffset(EF.Property<DateTime>(e,"UpdatedAt"),TimeSpan.Zero).ToUnixTimeMilliseconds()
             }).ToListAsync(ct);
@@ -68,7 +68,7 @@ public class SyncWorker : BackgroundService
             .Where(e => EF.Property<DateTime>(e,"UpdatedAt") > sinceUtc)
             .Select(e => new Table {
                 Id=e.Id.ToString(), Name=e.Name, HallId=e.HallId.ToString(),
-                PositionX=e.PositionX, PositionY=e.PositionY, ImagePath=e.ImagePath,
+                PositionX=e.PositionX, PositionY=e.PositionY, ImagePath=e.ImagePath ?? "",
                 IsDeleted = EF.Property<bool>(e,"IsDeleted"),
                 UpdatedAt = new DateTimeOffset(EF.Property<DateTime>(e,"UpdatedAt"),TimeSpan.Zero).ToUnixTimeMilliseconds()
             }).ToListAsync(ct);

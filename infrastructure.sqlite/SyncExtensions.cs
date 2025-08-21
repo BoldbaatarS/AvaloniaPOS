@@ -61,7 +61,7 @@ public static class SyncExtensions
                     HallId    = Guid.Parse(t.HallId),
                     PositionX = t.PositionX,
                     PositionY = t.PositionY,
-                    ImagePath = t.ImagePath
+                    ImagePath = t.ImagePath ?? ""
                 };
                 db.Tables.Add(entity);
             }

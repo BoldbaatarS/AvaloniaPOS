@@ -13,7 +13,7 @@ using Shared.Abstractions;              // IImageStorage, ImageStorageOptions
 using RestaurantPOS.Services;           // INavigationService, NavigationService
 using RestaurantPOS.ViewModels;         // VM-үүд
 using RestaurantPOS.Views;              // MainWindow, LoginWindow
-
+using Shared.Utils;
 namespace RestaurantPOS;
 
 public partial class App : Application
@@ -37,8 +37,19 @@ public partial class App : Application
         });
         sc.AddSingleton<IImageStorage, FileImageStorage>();
 
-        // DbContext (SQLite)
-        var dbPath = Path.Combine(AppContext.BaseDirectory, "Data", "pos.db");
+        var config = ConfigManager.Load();
+
+        var dbPath = config.DatabasePath;
+        
+        if (string.IsNullOrWhiteSpace(dbPath))
+        {
+            dbPath = Path.Combine(AppContext.BaseDirectory, "Data", "pos.db");
+            config.DatabasePath = dbPath;
+            ConfigManager.Save(config);
+        }
+
+        // DbContext (SQLite)´
+        
         Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
         sc.AddDbContext<AppDbContext>(opt => opt.UseSqlite($"Data Source={dbPath}"));
 

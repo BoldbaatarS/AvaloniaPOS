@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace RestaurantPOS.Utils;
+namespace Shared.Utils;
 
 public static class FileHelper
 {

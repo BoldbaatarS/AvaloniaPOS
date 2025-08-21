@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pos-client", "pos-client", "{E1F9450C-A3FC-EF6C-E3E7-CB3BA7B002EA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RestaurantPOS", "RestaurantPOS", "{E1F9450C-A3FC-EF6C-E3E7-CB3BA7B002EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS", "pos-client\RestaurantPOS.csproj", "{28C350AD-E498-4200-B21F-02130CD2956A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS", "RestaurantPOS\RestaurantPOS.csproj", "{28C350AD-E498-4200-B21F-02130CD2956A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shared", "shared\shared.csproj", "{A730892E-93BA-4867-9E65-4CB9110A4B01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "local-sync-service", "local-sync-service\local-sync-service.csproj", "{8B05D36C-2DAF-4F59-9BEB-32C6CE14C056}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalSyncService", "LocalSyncService\LocalSyncService.csproj", "{8B05D36C-2DAF-4F59-9BEB-32C6CE14C056}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudApi", "CloudApi\CloudApi.csproj", "{D6691A43-8453-42E2-B6BD-C16AD0B55BAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shared-protos", "shared-protos\shared-protos.csproj", "{503100EA-BDA0-4D69-9354-79B97C0DA5C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Protos", "Shared.Protos\Shared.Protos.csproj", "{503100EA-BDA0-4D69-9354-79B97C0DA5C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

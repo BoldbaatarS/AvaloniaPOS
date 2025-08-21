@@ -5,9 +5,10 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Infrastructure.Sqlite;
-using RestaurantPOS.Utils;
+using Shared.Utils;
 using Shared.Models;
 using Avalonia.Media.Imaging;
+
 
 namespace RestaurantPOS.ViewModels;
 

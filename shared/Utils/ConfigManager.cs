@@ -2,11 +2,13 @@ using System;
 using System.IO;
 using System.Text.Json;
 
-namespace RestaurantPOS.Utils
+namespace Shared.Utils
 {
     public class AppConfig
     {
         public Guid? DefaultHallId { get; set; }
+        public string? DatabasePath { get; set; }
+        public string? CloudBaseUrl { get; set; } 
     }
 
     public static class ConfigManager
