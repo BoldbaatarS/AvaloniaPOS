@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Your_password123
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  cloudapi:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./CloudApi/Dockerfile
+    container_name: cloudapi
+    depends_on:
+      - sqlserver
+    environment:
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./CloudApi:/app
+    command: ["dotnet", "CloudApi.dll"]
+
+volumes:
+  sql_data:
