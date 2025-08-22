@@ -1,8 +1,7 @@
-version: '3.9'
-
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
     container_name: sqlserver
     environment:
       - ACCEPT_EULA=Y
@@ -12,10 +11,11 @@ services:
     volumes:
       - sql_data:/var/opt/mssql
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Your_password123", "-Q", "SELECT 1"]
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/1433"]
       interval: 10s
+      retries: 5
+      start_period: 20s
       timeout: 5s
-      retries: 10
 
   cloudapi:
     platform: linux/amd64
@@ -25,17 +25,12 @@ services:
     container_name: cloudapi
     depends_on:
       sqlserver:
-        condition: service_healthy
+        condition: service_healthy   # ⬅ SQL Server эрүүл болтол CloudApi эхлэхгүй
     environment:
       - DOTNET_USE_POLLING_FILE_WATCHER=true
       - DOTNET_RUNNING_IN_CONTAINER=true
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-      - DOTNET_ENVIRONMENT=Docker
     ports:
       - "5001:5001"
-    volumes:
-      - ./CloudApi:/app
-    command: ["dotnet", "CloudApi.dll"]
-
 volumes:
   sql_data:
