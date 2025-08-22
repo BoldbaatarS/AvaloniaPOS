@@ -24,4 +24,7 @@ RUN dotnet publish -c Release -o /app/out
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app/out .
+# Docker орчин ашиглана
+ENV DOTNET_ENVIRONMENT=Docker
+
 ENTRYPOINT ["dotnet", "CloudApi.dll"]

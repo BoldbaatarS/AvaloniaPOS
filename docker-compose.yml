@@ -11,6 +11,11 @@ services:
       - "1433:1433"
     volumes:
       - sql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Your_password123", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   cloudapi:
     platform: linux/amd64
@@ -19,11 +24,13 @@ services:
       dockerfile: ./CloudApi/Dockerfile
     container_name: cloudapi
     depends_on:
-      - sqlserver
+      sqlserver:
+        condition: service_healthy
     environment:
       - DOTNET_USE_POLLING_FILE_WATCHER=true
       - DOTNET_RUNNING_IN_CONTAINER=true
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+      - DOTNET_ENVIRONMENT=Docker
     ports:
       - "5001:5001"
     volumes:

@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// HTTP/2
-builder.WebHost.ConfigureKestrel(o =>
-    o.ListenAnyIP(5001, lo => lo.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2));
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
 
-// Add services
 builder.Services.AddGrpc();
 builder.Services.AddDbContext<CloudDbContext>(o =>
-    o.UseSqlServer(builder.Configuration.GetConnectionString("CloudDb")));
+    o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
