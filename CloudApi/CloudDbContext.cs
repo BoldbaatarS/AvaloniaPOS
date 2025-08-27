@@ -13,9 +13,14 @@ public class CloudDbContext : DbContext
 {
     public CloudDbContext(DbContextOptions<CloudDbContext> o) : base(o) { }
 
+    public DbSet<UserModel> Users => Set<UserModel>();
     public DbSet<HallModel> Halls => Set<HallModel>();
     public DbSet<TableModel> Tables => Set<TableModel>();
-
+    public DbSet<Company> Company => Set<Company>();
+    public DbSet<Branch> Branch => Set<Branch>();
+    public DbSet<Product> Product => Set<Product>();
+    public DbSet<Category> Categories => Set<Category>();
+     
     protected override void OnModelCreating(ModelBuilder mb)
     {
         mb.Entity<HallModel>().Property<DateTime>("UpdatedAt").HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -26,6 +31,10 @@ public class CloudDbContext : DbContext
 
         mb.Entity<HallModel>().HasQueryFilter(e => EF.Property<bool>(e, "IsDeleted") == false);
         mb.Entity<TableModel>().HasQueryFilter(e => EF.Property<bool>(e, "IsDeleted") == false);
+
+        mb.Entity<Product>()
+        .Property(p => p.Price)
+        .HasColumnType("decimal(18,2)");
 
         base.OnModelCreating(mb);
     }

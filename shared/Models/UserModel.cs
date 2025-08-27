@@ -8,4 +8,7 @@ public class UserModel
     public string Name { get; set; } = string.Empty;
     public string Pin { get; set; } = string.Empty;
     public bool IsAdmin { get; set; } = false;
+
+    public Guid BranchId { get; set; }
+    public Branch Branch { get; set; } = default!;
 }

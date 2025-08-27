@@ -17,7 +17,11 @@ namespace Infrastructure.Sqlite
         public DbSet<UserModel> Users => Set<UserModel>();
         public DbSet<HallModel> Halls => Set<HallModel>();
         public DbSet<TableModel> Tables => Set<TableModel>();
-
+        public DbSet<Company> Company => Set<Company>();
+        public DbSet<Branch> Branch => Set<Branch>();
+        public DbSet<Product> Product => Set<Product>();
+        public DbSet<Category> Categories => Set<Category>();
+        
         // 🔁 DI-ээр ирээгүй (design-time, тусдаа хэрэглэх үед) fallback хийхийг зөвшөөрнө
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

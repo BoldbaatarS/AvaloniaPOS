@@ -23,7 +23,7 @@ builder.Configuration
 builder.Services.AddGrpc();
 builder.Services.AddDbContext<CloudDbContext>(o =>
     o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 // DB migrate автоматаар хийх
@@ -35,5 +35,7 @@ using (var scope = app.Services.CreateScope())
 
 app.MapGrpcService<SyncGrpcService>();
 app.MapGet("/", () => "gRPC server running with MSSQL");
+
+
 
 app.Run();

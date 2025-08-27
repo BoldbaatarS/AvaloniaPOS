@@ -15,28 +15,24 @@ namespace Shared.Models
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-
         private string? _name = string.Empty;
         public string? Name
         {
             get => _name;
             set { if (_name != value) { _name = value; OnPropertyChanged(); } }
         }
-
         private double _positionX;
         public double PositionX
         {
             get => _positionX;
             set { if (Math.Abs(_positionX - value) > double.Epsilon) { _positionX = value; OnPropertyChanged(); } }
         }
-
         private double _positionY;
         public double PositionY
         {
             get => _positionY;
             set { if (Math.Abs(_positionY - value) > double.Epsilon) { _positionY = value; OnPropertyChanged(); } }
         }
-
         // Зургийн эх зам (оригинал)
         private string? _imagePath = string.Empty;
         public string? ImagePath
