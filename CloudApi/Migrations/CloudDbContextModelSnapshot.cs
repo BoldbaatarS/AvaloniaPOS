@@ -39,7 +39,7 @@ namespace CloudApi.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Branch");
+                    b.ToTable("Branches");
                 });
 
             modelBuilder.Entity("Shared.Models.Category", b =>
@@ -79,13 +79,16 @@ namespace CloudApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company");
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("Shared.Models.HallModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ImagePath")
@@ -106,6 +109,8 @@ namespace CloudApi.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
 
                     b.ToTable("Halls");
                 });
@@ -135,7 +140,7 @@ namespace CloudApi.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Shared.Models.TableModel", b =>
@@ -221,18 +226,30 @@ namespace CloudApi.Migrations
             modelBuilder.Entity("Shared.Models.Category", b =>
                 {
                     b.HasOne("Shared.Models.Branch", "Branch")
-                        .WithMany()
+                        .WithMany("Categories")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Shared.Models.Category", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Branch");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("Shared.Models.HallModel", b =>
+                {
+                    b.HasOne("Shared.Models.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
                 });
 
             modelBuilder.Entity("Shared.Models.Product", b =>
@@ -246,7 +263,7 @@ namespace CloudApi.Migrations
                     b.HasOne("Shared.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Branch");
@@ -278,6 +295,8 @@ namespace CloudApi.Migrations
 
             modelBuilder.Entity("Shared.Models.Branch", b =>
                 {
+                    b.Navigation("Categories");
+
                     b.Navigation("Products");
                 });
 

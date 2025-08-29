@@ -57,6 +57,9 @@ namespace Shared.Models
             }
         }
 
+        public Guid BranchId { get; set; }
+        public Branch Branch { get; set; } = default!;
+
         /// <summary>
         /// Холбогдох ширээнүүд. (Shared.TableModel нь мөн POCO байх ёстой)
         /// </summary>

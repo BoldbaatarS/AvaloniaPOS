@@ -16,9 +16,9 @@ public class CloudDbContext : DbContext
     public DbSet<UserModel> Users => Set<UserModel>();
     public DbSet<HallModel> Halls => Set<HallModel>();
     public DbSet<TableModel> Tables => Set<TableModel>();
-    public DbSet<Company> Company => Set<Company>();
-    public DbSet<Branch> Branch => Set<Branch>();
-    public DbSet<Product> Product => Set<Product>();
+    public DbSet<Company> Companies { get; set; } = default!;
+    public DbSet<Branch> Branches { get; set; } = default!;
+    public DbSet<Product> Products { get; set; } = default!;
     public DbSet<Category> Categories => Set<Category>();
      
     protected override void OnModelCreating(ModelBuilder mb)
@@ -35,6 +35,36 @@ public class CloudDbContext : DbContext
         mb.Entity<Product>()
         .Property(p => p.Price)
         .HasColumnType("decimal(18,2)");
+
+        // Product → Category (NO CASCADE)
+        mb.Entity<Product>()
+            .HasOne(p => p.Category)
+            .WithMany(c => c.Products)
+            .HasForeignKey(p => p.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Category → Parent (Self reference, NO CASCADE)
+        mb.Entity<Category>()
+            .HasOne(c => c.Parent)
+            .WithMany(c => c.Children)
+            .HasForeignKey(c => c.ParentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Category → Branch (Cascade allowed)
+        mb.Entity<Category>()
+            .HasOne(c => c.Branch)
+            .WithMany(b => b.Categories)
+            .HasForeignKey(c => c.BranchId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Branch → Company (Cascade allowed)
+        mb.Entity<Branch>()
+            .HasOne(b => b.Company)
+            .WithMany(c => c.Branches)
+            .HasForeignKey(b => b.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
 
         base.OnModelCreating(mb);
     }

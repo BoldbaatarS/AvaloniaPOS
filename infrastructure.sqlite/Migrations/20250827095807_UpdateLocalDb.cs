@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace CloudApi.Migrations
+namespace Infrastructure.Sqlite.Migrations
 {
     /// <inheritdoc />
-    public partial class FixProductPrice : Migration
+    public partial class UpdateLocalDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

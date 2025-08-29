@@ -10,7 +10,9 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(5001, listenOptions =>
     {
-        listenOptions.Protocols = HttpProtocols.Http2;
+        listenOptions.Protocols =
+            Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+
     });
 });
 
@@ -21,8 +23,13 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 builder.Services.AddGrpc();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<CloudDbContext>(o =>
     o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
@@ -33,7 +40,15 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+// Swagger зөвхөн Development дээр идэвхтэй болгож болно
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.MapGrpcService<SyncGrpcService>();
+app.MapControllers();   // REST API endpoint-ууд
 app.MapGet("/", () => "gRPC server running with MSSQL");
 
 

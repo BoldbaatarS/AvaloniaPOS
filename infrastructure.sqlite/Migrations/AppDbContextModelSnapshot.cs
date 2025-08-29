@@ -43,6 +43,9 @@ namespace Infrastructure.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -51,6 +54,8 @@ namespace Infrastructure.Sqlite.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
 
                     b.HasIndex("ParentId");
 
@@ -176,6 +181,9 @@ namespace Infrastructure.Sqlite.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("INTEGER");
 
@@ -189,12 +197,15 @@ namespace Infrastructure.Sqlite.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BranchId");
+
                     b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            BranchId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
                             IsAdmin = true,
                             Name = "Admin",
                             Pin = "0000"
@@ -202,6 +213,7 @@ namespace Infrastructure.Sqlite.Migrations
                         new
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            BranchId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
                             IsAdmin = false,
                             Name = "Guest",
                             Pin = "1234"
@@ -221,9 +233,17 @@ namespace Infrastructure.Sqlite.Migrations
 
             modelBuilder.Entity("Shared.Models.Category", b =>
                 {
+                    b.HasOne("Shared.Models.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Shared.Models.Category", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId");
+
+                    b.Navigation("Branch");
 
                     b.Navigation("Parent");
                 });
@@ -256,6 +276,17 @@ namespace Infrastructure.Sqlite.Migrations
                         .IsRequired();
 
                     b.Navigation("Hall");
+                });
+
+            modelBuilder.Entity("Shared.Models.UserModel", b =>
+                {
+                    b.HasOne("Shared.Models.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
                 });
 
             modelBuilder.Entity("Shared.Models.Branch", b =>
