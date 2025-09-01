@@ -29,6 +29,18 @@ public class HallsController : ControllerBase
 
         return Ok(halls);
     }
+    // GET api/halls/{id}
+    [HttpGet("{id}")]
+    public async Task<ActionResult<HallDto>> GetById(Guid id)
+    {
+        var hall = await _db.Halls
+            .ProjectTo<HallDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(h => h.Id == id);
+
+        if (hall == null) return NotFound();
+
+        return Ok(hall);
+    }
 
     // POST api/halls
     [HttpPost]
@@ -41,5 +53,31 @@ public class HallsController : ControllerBase
 
         var result = _mapper.Map<HallDto>(hall);
         return CreatedAtAction(nameof(GetAll), new { id = result.Id }, result);
+        
+    }
+    // PUT api/halls/{id}
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(Guid id, HallDto dto)
+    {
+        var hall = await _db.Halls.FindAsync(id);
+        if (hall == null) return NotFound();
+
+        _mapper.Map(dto, hall); // DTO-г Entity рүү хуулна
+        await _db.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    // DELETE api/halls/{id}
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var hall = await _db.Halls.FindAsync(id);
+        if (hall == null) return NotFound();
+
+        _db.Halls.Remove(hall);
+        await _db.SaveChangesAsync();
+
+        return NoContent();
     }
 }
