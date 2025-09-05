@@ -5,7 +5,7 @@ namespace Shared.Models;
 
 public class Product
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = default!;
     public decimal Price { get; set; }
 
@@ -14,4 +14,7 @@ public class Product
 
     public Guid CategoryId { get; set; }
     public Category Category { get; set; } = default!;
+    
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public bool IsDeleted { get; set; } = false;
 }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 using CloudApi.DTOs;
 using CloudApi;
+using CloudApi.Utils;
 
 
 namespace CloudApi.Controllers;
@@ -24,52 +25,106 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpGet]
-     public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAll()
-     {
+    public async Task<ActionResult<ApiResponse<IEnumerable<CompanyDto>>>> GetAll()
+    {
         var companies = await _db.Companies
             .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
             .ToListAsync();
-        return Ok(companies);
-     }
+
+        return Ok(ApiResponse<IEnumerable<CompanyDto>>.Success(HttpContext, companies));
+    }
+
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CompanyDto>> GetById(Guid id)
+    public async Task<ActionResult<ApiResponse<CompanyDto>>> GetById(Guid id)
     {
-        var company = await _db.Companies
-            .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(c => c.Id == id);
+        var company = await _db.Companies.FindAsync(id);
+        if (company == null)
+        {
+            return Ok(ApiResponse<CompanyDto>.Fail(HttpContext, StatusCodes.Status404NotFound, "Компани олдсонгүй"));
+        }
 
-        if (company == null) return NotFound();
-
-        return Ok(company);
+        var dto = _mapper.Map<CompanyDto>(company);
+        return Ok(ApiResponse<CompanyDto>.Success(HttpContext, dto));
     }
-   
 
-    // POST api/companies
+
+
     [HttpPost]
-    public async Task<ActionResult<HallDto>> Create(HallDto dto)
+    public async Task<ActionResult<ApiResponse<CompanyDto>>> Create(CompanyCreateDto dto)
     {
-        var company = _mapper.Map<Shared.Models.Company>(dto);
+        // Нэр + Регистрийн хослол давхардаж байгаа эсэхийг шалгах
+        bool exists = await _db.Companies.AnyAsync(c =>
+            c.Name.ToLower() == dto.Name.ToLower() &&
+            c.Register == dto.Register);
 
+        if (exists)
+        {
+            return Ok(ApiResponse<CompanyDto>.Fail(HttpContext, StatusCodes.Status409Conflict, "Ижил нэр ба регистрийн дугаартай компани аль хэдийн бүртгэгдсэн байна."));
+        }
+
+        // Утасны дугаар шалгах
+        var newPhones = StringHelpers.SplitPhones(dto.Phone);
+        if (newPhones.Any())
+        {
+            var existingPhones = _db.Companies
+                .Where(c => c.Phone != null)
+                .AsEnumerable()
+                .SelectMany(c => StringHelpers.SplitPhones(c.Phone))
+                .ToList();
+
+            if (newPhones.Intersect(existingPhones).Any())
+            {
+                return Ok(ApiResponse<CompanyDto>.Fail(HttpContext, StatusCodes.Status409Conflict, "Оруулсан утасны дугаар өмнө нь бүртгэгдсэн байна."));
+            }
+        }
+
+        var company = _mapper.Map<Company>(dto);
         _db.Companies.Add(company);
         await _db.SaveChangesAsync();
-
-        var result = _mapper.Map<HallDto>(company);
-        return CreatedAtAction(nameof(GetAll), new { id = result.Id }, result);
+        var result = _mapper.Map<CompanyDto>(company);
+       // return Ok(ApiResponse<CompanyDto>.Success(result));
+        return Ok(ApiResponse<CompanyDto>.Success(HttpContext, result));
     }
 
 
-     // PUT api/companies/{id}
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] CompanyDto dto)
+    public async Task<IActionResult> Update(Guid id, CompanyCreateDto dto)
     {
         var company = await _db.Companies.FindAsync(id);
         if (company == null) return NotFound();
 
-        _mapper.Map(dto, company); // DTO-г Entity рүү хуулна
+        // Нэр + Регистрийн хослол давхардаж байгаа эсэхийг шалгах
+        bool exists = await _db.Companies.AnyAsync(c =>
+            c.Id != id &&
+            c.Name.ToLower() == dto.Name.ToLower() &&
+            c.Register == dto.Register);
+
+        if (exists)
+        {
+            return Conflict(new { message = "Ижил нэр ба регистрийн дугаартай компани аль хэдийн бүртгэгдсэн байна." });
+        }
+
+        // Утасны дугаар шалгах
+        var newPhones = StringHelpers.SplitPhones(dto.Phone);
+        if (newPhones.Any())
+        {
+            var existingPhones = _db.Companies
+                .Where(c => c.Id != id && c.Phone != null)
+                .AsEnumerable()
+                .SelectMany(c => StringHelpers.SplitPhones(c.Phone))
+                .ToList();
+
+            if (newPhones.Intersect(existingPhones).Any())
+            {
+                return Conflict(new { message = "Оруулсан утасны дугаар өмнө нь бүртгэгдсэн байна." });
+            }
+        }
+
+        _mapper.Map(dto, company);
         await _db.SaveChangesAsync();
 
-        return NoContent();
+        return Ok(_mapper.Map<CompanyDto>(company));
     }
 
     

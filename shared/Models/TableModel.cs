@@ -70,9 +70,7 @@ namespace Shared.Models
         public Guid HallId { get; set; }
         public HallModel? Hall { get; set; }
 
-        public Guid BranchId { get; set; }
-        public Branch Branch { get; set; } = default!;
-
+       
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -28,7 +28,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<CloudDbContext>(o =>
-    o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    sqlOptions =>
+    {
+        sqlOptions.CommandTimeout(180);
+    }));
 
 builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
@@ -46,6 +50,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+// 📌 Middleware-ээ энд оруулна
+app.UseMiddleware<CloudApi.Middlewares.ExceptionMiddleware>();
 
 app.MapGrpcService<SyncGrpcService>();
 app.MapControllers();   // REST API endpoint-ууд

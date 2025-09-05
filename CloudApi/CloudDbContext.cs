@@ -23,6 +23,8 @@ public class CloudDbContext : DbContext
      
     protected override void OnModelCreating(ModelBuilder mb)
     {
+
+        
         mb.Entity<HallModel>().Property<DateTime>("UpdatedAt").HasDefaultValueSql("CURRENT_TIMESTAMP");
         mb.Entity<HallModel>().Property<bool>("IsDeleted").HasDefaultValue(false);
 
@@ -36,12 +38,15 @@ public class CloudDbContext : DbContext
         .Property(p => p.Price)
         .HasColumnType("decimal(18,2)");
 
+
+
         // Product → Category (NO CASCADE)
         mb.Entity<Product>()
             .HasOne(p => p.Category)
             .WithMany(c => c.Products)
             .HasForeignKey(p => p.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
+
 
         // Category → Parent (Self reference, NO CASCADE)
         mb.Entity<Category>()
@@ -64,6 +69,20 @@ public class CloudDbContext : DbContext
             .HasForeignKey(b => b.CompanyId)
             .OnDelete(DeleteBehavior.Cascade);
 
+
+        mb.Entity<Category>().HasQueryFilter(c => !c.IsDeleted);
+        mb.Entity<Product>().HasQueryFilter(p => !p.IsDeleted);
+
+        var superAdminId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+
+        mb.Entity<UserModel>().HasData(new UserModel
+        {
+            Id = superAdminId,
+            Name = "SuperAdmin",
+            Pin = "admin123", // бодит системд hash хийх ёстой
+            Role = UserRole.SuperAdmin,
+            BranchId = null
+        });
 
 
         base.OnModelCreating(mb);
